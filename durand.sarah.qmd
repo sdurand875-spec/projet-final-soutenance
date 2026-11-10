@@ -95,15 +95,120 @@ the time of the test and the sex are published, in the file
 
 # Methods: Python (video timing tool)
 
-<!-- Explain the main technical choices (this is the core of the report):
-     - fps trap: file says 30 fps, real = 240 fps -> fps asked to the user
-       (5522 frames / 30 = 184 s, impossible; / 240 = 23 s, correct)
-     - measurement window: arrows, progress bar, START/END with Enter,
-       time = (END - START) / fps, precision = 1 frame = 4.2 ms
-     - results saved in a CSV after each video, already measured videos skipped
-     - anonymisation (ids, age computed from dates)
-     - structure: main.ipynb (entry point, MEASURE switch) + sources/video_timing.py
-     Add a table with the main functions (name / input / output / role). -->
+## General workflow
+
+For each video, the user gives the real recording frequency; a window then
+shows the video frame by frame. The user moves with the arrow keys or a
+progress bar, presses Enter on the start frame, then on the finish frame.
+The time is computed as:
+
+$$\text{time} = \frac{\text{finish frame} - \text{start frame}}{\text{recording frequency}}$$
+
+The result is saved in a CSV file after each video.
+
+## The recording frequency trap
+
+In slow-motion mode, the iPhone records at 240 frames per second but stores
+the video so that it is played at 30 frames per second: this is what creates
+the slow-motion effect. The video file therefore states 30 frames/s, a wrong
+value for our computation.
+
+Example with one of our videos, which contains 5,522 frames:
+
+- with the frequency stored in the file: 5,522 / 30 = 184 s, i.e. more than
+  3 minutes, which is impossible;
+- with the real frequency: 5,522 / 240 = 23 s, which matches the real
+  duration of the video.
+
+The error is a factor of 8 (240 / 30). The same applies to the test time:
+a player whose start frame is 646 and finish frame is 5,217 has a time of
+4,571 / 240 = 19.05 s. With the frequency of the file, we would have obtained
+4,571 / 30 = 152.4 s.
+
+The program therefore does not rely on the frequency stored in the file:
+it displays it for information, then **asks the user for the real frequency**
+(240 by default).
+
+The frequency also sets the precision of the measurement. At 240 frames/s,
+one frame lasts 1/240 = 4.2 ms; at 30 frames/s, it would last 33 ms.
+Slow motion makes the measurement 8 times more precise.
+
+## Anonymisation and data protection
+
+The participants are minors. Their name, birth date and image are personal
+data that must not appear in a public GitHub repository: the image-rights
+authorisation signed for the camp covers use by the structure, not public
+distribution on the Internet. The videos are also too large (about 200 MB
+each) for GitHub, which is limited to 100 MB per file.
+
+This was solved as follows:
+
+- each player receives an **anonymous id** (P01 to P20), assigned
+  automatically by the program;
+- the **birth date** is only used to compute the **age at the time of the
+  test**; only this age is published;
+- the files containing personal information (videos, measures with names,
+  name → id correspondence table, birth dates) **stay only on my computer**;
+  the `.gitignore` file prevents them from being sent to GitHub;
+- the only published results file, `results/measures_anonymous.csv`,
+  contains only the id, the frame numbers, the frequency, the time, the age
+  and the sex.
+
+Thanks to the `MEASURE = False` switch in `main.ipynb`, the project runs
+without the videos: it directly reads this anonymous file.
+
+## Code organisation
+
+The Python code is split into two files:
+
+- `main.ipynb` is the **entry point**: it only contains the settings
+  (folders, `MEASURE` switch) and the function calls;
+- `sources/video_timing.py` contains **all the functions**, grouped by theme:
+  video information, display, measurement, results files, anonymisation.
+
+The notebook thus stays short and readable, and each function can be modified
+without affecting the rest.
+
+| Theme | Function | Input | Output | Role |
+|---|---|---|---|---|
+| **Video information** | `get_video_info` | video path | file frequency, number of frames | read the video information |
+| | `ask_fps` | file frequency, default frequency (240) | real frequency | ask the user for the real frequency, rejecting invalid values |
+| | `get_name_from_file` | video path | player name | read the player's name from the file name (spaces become `_`) |
+| **Display** | `put_text` | image, text, position, colour, size | (modified image) | write a text with a black outline, readable on any background |
+| | `frame_to_x` | frame number, number of frames, width | horizontal position | convert a frame number into a position on the progress bar |
+| | `draw_display` | frame, position, number of frames, frequency, start, finish | image to display | assemble the frame, the texts (time, START/END) and the progress bar |
+| **Measurement** | `measure_test` | video path, real frequency, display scale | name, start and finish frames, frequency, time (or nothing if cancelled) | open the measurement window, handle the keyboard, compute the time |
+| | `on_mouse` (inside `measure_test`) | mouse event, position | (updated position) | jump in the video by clicking or dragging on the bar |
+| **Results files** | `list_videos` | folder | sorted list of videos | find the video files in the folder (.mov, .mp4, .m4v, .avi) |
+| | `load_results` | CSV file | results table | read the results, or return an empty table if the file does not exist |
+| | `save_result` | result, CSV file | (updated file) | save a result, replacing the old one if the video was already measured |
+| | `measure_all_videos` | folder, CSV file, frequency, `redo` option | (updated file) | measure all videos one after the other, skipping those already done |
+| **Anonymisation** | `make_id_table` | list of names, correspondence file | name → id table | assign the ids P01, P02…, never changing those already given |
+| | `anonymize_results` | measures, id table, dates, output file | anonymous file | create the published file: id, frames, frequency, time, age, sex |
+
+: Functions of `sources/video_timing.py` {#tbl-functions}
+
+## A privacy error corrected with Git
+
+During the first upload to GitHub, the file `data/children_info.csv`, which
+contains the names and birth dates, was published by mistake: the line that
+should have excluded it had been forgotten in the `.gitignore`. The repository
+was still private, so the file was never publicly visible. The error was
+spotted by checking the list of uploaded files.
+
+Simply deleting the file would not have been enough: it would have remained
+visible in the Git history. The correction was done in four steps:
+
+1. add `data/children_info.csv` to the `.gitignore`;
+2. `git rm --cached data/children_info.csv`: remove the file from Git without
+   deleting it from the computer;
+3. `git commit --amend`: replace the first commit with a version without
+   this file;
+4. `git push --force`: replace the version stored on GitHub.
+
+As GitHub can keep an old commit accessible through a direct link, the
+repository was deleted and published again before being made public.
+Lesson learned: always check the list of uploaded files before the first commit.
 
 # Methods: R (statistical analysis)
 
