@@ -67,12 +67,31 @@ This project addresses two questions:
    
 # Data
 
-<!-- Participants: 20 young ice hockey players (17 boys, 3 girls),
-     8.8 to 17.7 years old, autumn 2026 camp. One Illinois trial each.
-     Acquisition: smartphone, slow motion 240 fps, camera fixed on the
-     start/finish line.
-     Privacy: minors -> videos and names not shared; anonymous ids P01-P20;
-     birth dates kept private, only age is published. -->
+**Participants.** Twenty young ice hockey players (17 boys, 3 girls), aged
+8.8 to 17.7 years, performed the Illinois agility test during the 2026 autumn
+holiday camp.
+
+**Test conditions.** The test was performed off-ice, on a concrete car park.
+It had rained the day before, so the ground was still damp and rather slippery.
+Before the test, players coming from an on-ice session did a brief warm-up;
+the others did a full warm-up (running drills, slaloms and sprints).
+
+**Protocol.** Players started standing, 1 m behind the start/finish line.
+Each player performed one trial; players aged U13 and under could perform a
+second trial if they wished, and the best of the two was kept. On the video,
+the start frame and the finish frame are the frames where the player's hips
+are level with the cone marking the start/finish line. The test time is
+therefore the time between the two crossings of this line by the hips.
+
+**Video acquisition.** Videos were recorded with an iPhone 13 in slow-motion
+mode (240 frames per second), fixed on a tripod 2–3 m from the start cone,
+facing the start/finish line. A single camera is enough, since the start and
+the finish are on the same line.
+
+**Privacy.** As the participants are minors, videos, names and birth dates are
+not shared. Each player is given an anonymous id (P01 to P20). Only the age at
+the time of the test and the sex are published, in the file
+`results/measures_anonymous.csv`.
 
 # Methods: Python (video timing tool)
 
