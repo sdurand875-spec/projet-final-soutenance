@@ -9,7 +9,7 @@
 <meta name="author" content="Sarah Durand">
 <meta name="dcterms.date" content="2026-11-10">
 
-<title>Video timing of the Illinois agility test</title>
+<title>Timing a speed test with a smartphone: a video tool to replace timing gates</title>
 <style>
 
 span.smallcaps{font-variant: small-caps;}
@@ -2334,7 +2334,13 @@ window.Quarto = {
   <li><a href="#time-and-age" id="toc-time-and-age" class="nav-link" data-scroll-target="#time-and-age"><span class="header-section-number">6.2</span> Time and age</a></li>
   </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">7</span> Discussion</a></li>
-  <li><a href="#use-of-ai-and-references" id="toc-use-of-ai-and-references" class="nav-link" data-scroll-target="#use-of-ai-and-references"><span class="header-section-number">8</span> Use of AI and references</a></li>
+  <li><a href="#use-of-ai" id="toc-use-of-ai" class="nav-link" data-scroll-target="#use-of-ai"><span class="header-section-number">8</span> Use of AI</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">9</span> References</a>
+  <ul class="collapse">
+  <li><a href="#articles" id="toc-articles" class="nav-link" data-scroll-target="#articles"><span class="header-section-number">9.1</span> Articles</a></li>
+  <li><a href="#timing-gates-prices-consulted-in-november-2026" id="toc-timing-gates-prices-consulted-in-november-2026" class="nav-link" data-scroll-target="#timing-gates-prices-consulted-in-november-2026"><span class="header-section-number">9.2</span> Timing gates (prices consulted in November 2026)</a></li>
+  <li><a href="#software-and-libraries" id="toc-software-and-libraries" class="nav-link" data-scroll-target="#software-and-libraries"><span class="header-section-number">9.3</span> Software and libraries</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -2342,8 +2348,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Video timing of the Illinois agility test</h1>
-<p class="subtitle lead"><exact course name> – Project report</exact></p>
+<h1 class="title">Timing a speed test with a smartphone: a video tool to replace timing gates</h1>
+<p class="subtitle lead">Application example: the Illinois agility test in 20 young ice hockey players</p>
 </div>
 
 
@@ -2719,17 +2725,38 @@ Figure 3: Left: QQ plot of the residuals. Right: residuals against fitted value
 </ul>
 <p><strong>Conclusion.</strong> This project shows that a smartphone and a simple program can replace timing gates for monitoring speed and agility tests, provided that the tool is validated against a reference measurement.</p>
 </section>
-<section id="use-of-ai-and-references" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Use of AI and references</h1>
-<!-- Which parts were written with Claude (Anthropic), how you checked them.
-     References: OpenCV, pandas, ggplot2, R, Quarto, Koo & Li (2016) if needed,
-     Balsalobre-Fernández et al. (My Jump app) if you cite it. -->
+<section id="use-of-ai" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Use of AI</h1>
+<p>The idea of the project, the choice of the test, the protocol, the filming and the measurement of the 20 videos were carried out by the author. The way the tool works (frame-by-frame navigation, progress bar, START/END marking, criterion of the hips level with the cone) and the analysis choices (median and quartiles, relationship with age) were defined by the author.</p>
+<p>Most of the Python and R code was written with Claude (Anthropic), based on these instructions. Each step was tested on the videos, and the problems encountered were identified and corrected along the way (30/240 frames/s frequency, file errors, anonymisation).</p>
+<p>For the writing, Claude proposed an outline and a first draft in French based on the information provided by the author. This text was reviewed, corrected and completed by the author (context, protocol, interpretation, bibliographic reference), then translated into English by Claude.</p>
+</section>
+<section id="references" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> References</h1>
+<section id="articles" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="articles"><span class="header-section-number">9.1</span> Articles</h2>
 <ul>
 <li>Balsalobre-Fernández, C., Glaister, M., &amp; Lockey, R. A. (2015). The validity and reliability of an iPhone app for measuring vertical jump performance. <em>Journal of Sports Sciences</em>, 33(15), 1574–1579.</li>
-<li>Microgate Witty kit (price consulted in November 2026): <a href="https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html" class="uri">https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html</a></li>
-<li>Tendo Sprint System (price consulted in November 2026): <a href="https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system" class="uri">https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system</a></li>
 <li>Slavicek, T., Stastny, P., Roczniok, R., &amp; Musalek, M. (2022). Lower limb skeletal robustness determines the change of directional speed performance in youth ice hockey. <em>Journal of Human Kinetics</em>, 85, 75–85. <a href="https://doi.org/10.2478/hukin-2022-0111" class="uri">https://doi.org/10.2478/hukin-2022-0111</a></li>
 </ul>
+</section>
+<section id="timing-gates-prices-consulted-in-november-2026" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="timing-gates-prices-consulted-in-november-2026"><span class="header-section-number">9.2</span> Timing gates (prices consulted in November 2026)</h2>
+<ul>
+<li>Microgate Witty kit: <a href="https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html" class="uri">https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html</a></li>
+<li>Tendo Sprint System: <a href="https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system" class="uri">https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system</a></li>
+</ul>
+</section>
+<section id="software-and-libraries" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="software-and-libraries"><span class="header-section-number">9.3</span> Software and libraries</h2>
+<ul>
+<li>Python: <a href="https://www.python.org" class="uri">https://www.python.org</a>, with OpenCV (<a href="https://opencv.org" class="uri">https://opencv.org</a>), NumPy (<a href="https://numpy.org" class="uri">https://numpy.org</a>) and pandas (<a href="https://pandas.pydata.org" class="uri">https://pandas.pydata.org</a>).</li>
+<li>R Core Team. <em>R: A language and environment for statistical computing</em>. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org" class="uri">https://www.R-project.org</a></li>
+<li>Wickham, H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York.</li>
+<li>Quarto: <a href="https://quarto.org" class="uri">https://quarto.org</a></li>
+<li>Claude (Anthropic): <a href="https://www.anthropic.com/claude" class="uri">https://www.anthropic.com/claude</a></li>
+</ul>
+</section>
 </section>
 
 </main>

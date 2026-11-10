@@ -1,6 +1,6 @@
 ---
-title: "Video timing of the Illinois agility test"
-subtitle: "<EXACT COURSE NAME> – Project report"
+title: "Timing a speed test with a smartphone: a video tool to replace timing gates"
+subtitle: "Application example: the Illinois agility test in 20 young ice hockey players"
 author: "Sarah Durand"
 date: today
 format:
@@ -392,21 +392,51 @@ variability remains unexplained: training level, maturation, morphology, etc.
 replace timing gates for monitoring speed and agility tests, provided that
 the tool is validated against a reference measurement.
 
-# Use of AI and references
+# Use of AI
 
-<!-- Which parts were written with Claude (Anthropic), how you checked them.
-     References: OpenCV, pandas, ggplot2, R, Quarto, Koo & Li (2016) if needed,
-     Balsalobre-Fernández et al. (My Jump app) if you cite it. -->
-     
-     
+The idea of the project, the choice of the test, the protocol, the filming and
+the measurement of the 20 videos were carried out by the author. The way the
+tool works (frame-by-frame navigation, progress bar, START/END marking,
+criterion of the hips level with the cone) and the analysis choices (median
+and quartiles, relationship with age) were defined by the author.
+
+Most of the Python and R code was written with Claude (Anthropic), based on
+these instructions. Each step was tested on the videos, and the problems
+encountered were identified and corrected along the way (30/240 frames/s
+frequency, file errors, anonymisation).
+
+For the writing, Claude proposed an outline and a first draft in French based
+on the information provided by the author. This text was reviewed, corrected
+and completed by the author (context, protocol, interpretation,
+bibliographic reference), then translated into English by Claude.
+
+# References
+
+## Articles
+
 - Balsalobre-Fernández, C., Glaister, M., & Lockey, R. A. (2015). The validity
   and reliability of an iPhone app for measuring vertical jump performance.
   *Journal of Sports Sciences*, 33(15), 1574–1579.
-- Microgate Witty kit (price consulted in November 2026):
-  <https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html>
-- Tendo Sprint System (price consulted in November 2026):
-  <https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system>
 - Slavicek, T., Stastny, P., Roczniok, R., & Musalek, M. (2022). Lower limb
   skeletal robustness determines the change of directional speed performance
   in youth ice hockey. *Journal of Human Kinetics*, 85, 75–85.
   <https://doi.org/10.2478/hukin-2022-0111>
+
+## Timing gates (prices consulted in November 2026)
+
+- Microgate Witty kit:
+  <https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html>
+- Tendo Sprint System:
+  <https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system>
+
+## Software and libraries
+
+- Python: <https://www.python.org>, with OpenCV (<https://opencv.org>),
+  NumPy (<https://numpy.org>) and pandas (<https://pandas.pydata.org>).
+- R Core Team. *R: A language and environment for statistical computing*.
+  R Foundation for Statistical Computing, Vienna, Austria.
+  <https://www.R-project.org>
+- Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis*.
+  Springer-Verlag New York.
+- Quarto: <https://quarto.org>
+- Claude (Anthropic): <https://www.anthropic.com/claude>
