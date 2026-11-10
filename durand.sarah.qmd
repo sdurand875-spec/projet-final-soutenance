@@ -39,14 +39,32 @@ data <- read.csv(file.path("results", "measures_anonymous.csv"))
 
 # Introduction
 
-<!-- Context: speed/agility tests usually need timing gates, which are
-     hard to set up on ice. Idea: a smartphone in slow motion (240 fps)
-     + a program where the user picks the START and END frames (like My Jump).
-     Research-engineering question (2 questions):
-     1) Can we build a simple video tool to time any test starting and
-        finishing on the same line?
-     2) Is the Illinois time related to age in young ice hockey players? -->
+Speed and agility tests are a standard part of the monitoring of young athletes.
+To time them accurately, timing gates (photoelectric cells) are usually used.
+This equipment is expensive: about €1,500 to €3,000 for a kit of a few gates
+(Microgate Witty, Tendo Sprint System). It also takes time to set up and to
+learn how to use. For many sports structures, spending such an amount for a
+few tests per year is not realistic, especially since the monitoring of young
+players does not require a precision to the thousandth of a second.
 
+The most common alternative, the hand-held stopwatch, is not satisfactory
+either: the coach's reaction time at the start and at the finish introduces an
+error, whereas on a test lasting about fifteen seconds, a few tenths of a second
+can change the interpretation.
+
+The My Jump app (Balsalobre-Fernández et al., 2015) showed that a smartphone
+filming in slow motion can accurately measure a performance by manually
+selecting key frames. We applied the same principle: the test is filmed in slow
+motion (240 frames per second), the user selects the start frame and the finish
+frame, and the program computes the time.
+
+This project addresses two questions:
+
+1. Can we build a simple, low-cost video tool to time any test that starts and
+   finishes on the same line?
+2. Applied to the Illinois agility test, can this tool highlight a relationship
+   between time and age in young ice hockey players?
+   
 # Data
 
 <!-- Participants: 20 young ice hockey players (17 boys, 3 girls),
@@ -144,3 +162,13 @@ knitr::kable(summary(model)$coefficients, digits = 4,
 <!-- Which parts were written with Claude (Anthropic), how you checked them.
      References: OpenCV, pandas, ggplot2, R, Quarto, Koo & Li (2016) if needed,
      Balsalobre-Fernández et al. (My Jump app) if you cite it. -->
+     
+     
+# 
+- Balsalobre-Fernández, C., Glaister, M., & Lockey, R. A. (2015). The validity
+  and reliability of an iPhone app for measuring vertical jump performance.
+  *Journal of Sports Sciences*, 33(15), 1574–1579.
+- Microgate Witty kit (price consulted in November 2026):
+  <https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html>
+- Tendo Sprint System (price consulted in November 2026):
+  <https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system>
