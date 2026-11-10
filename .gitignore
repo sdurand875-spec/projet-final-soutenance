@@ -1,0 +1,20 @@
+# Videos of the children: personal data, never shared
+Video/
+
+# Private files with names
+results/video_measures.csv
+results/id_table.csv
+data/app_times.csv
+
+# Files generated automatically (Mac, Python)
+.DS_Store
+__pycache__/
+
+# Course instructions (not part of the project)
+Python-R-Git_*.html
+
+# RStudio files generated automatically
+.Rhistory
+.Rproj.user/
+
+data/children_info.csv

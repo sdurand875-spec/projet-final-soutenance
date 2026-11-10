@@ -1,0 +1,169 @@
+---
+title: "Video timing of the Illinois agility test: statistical analysis"
+author: "Sarah Durand"
+date: today
+format:
+  html:
+    number-sections: true
+    toc: true
+    embed-resources: true
+editor: source
+---
+
+# Aim
+
+Is the Illinois agility test time related to the age of young ice hockey
+players? Times were measured with our video program (Python, `main.ipynb`)
+for 20 children (8.8 to 17.7 years old).
+Data: `results/measures_anonymous.csv` (anonymous ids P01 to P20).
+
+# Packages
+
+```{r}
+#| label: packages
+#| message: false
+
+# Required packages (install once in the console):
+# install.packages(c("ggplot2", "irr", "rmarkdown"))
+
+library(ggplot2)   # graphics
+library(irr)       # intraclass correlation coefficient (ICC)
+```
+
+# Data
+
+```{r}
+#| label: read-data
+
+# Read the anonymous results produced by Python
+# file.path() builds a path that works on Windows, Mac and Linux
+data <- read.csv(file.path("results", "measures_anonymous.csv"))
+
+# Structure of the table: column names and types
+str(data)
+
+# Number of children and check for missing values
+cat("Number of children:", nrow(data), "\n")
+cat("Missing ages:", sum(is.na(data$age_years)), "\n")
+```
+
+# Ranking of the children
+
+```{r}
+#| label: ranking-table
+
+# Sort the children from the fastest (smallest time) to the slowest
+data_rank <- data[order(data$time_video), c("id", "time_video")]
+data_rank$rank <- seq_len(nrow(data_rank))
+
+knitr::kable(data_rank[, c("rank", "id", "time_video")], digits = 3,
+             col.names = c("Rank", "Child", "Time (s)"),
+             row.names = FALSE,
+             caption = "Illinois test: children ranked from fastest to slowest")
+```
+
+```{r}
+#| label: fig-ranking
+#| fig-cap: "Illinois test time of each child, from the fastest (top) to the slowest (bottom). Black line: median. Blue dashed line: 1st quartile (Q1). Red dashed line: 3rd quartile (Q3)."
+
+# Colour: green = fastest, red = slowest, grey = others
+data_rank$group <- "Other"
+data_rank$group[1] <- "Fastest"
+data_rank$group[nrow(data_rank)] <- "Slowest"
+
+# Order of the bars: fastest at the top
+data_rank$id <- factor(data_rank$id, levels = rev(data_rank$id))
+
+# Quartiles of the times: Q1 (25%), median (50%), Q3 (75%)
+q <- quantile(data_rank$time_video, probs = c(0.25, 0.50, 0.75))
+
+ggplot(data_rank, aes(x = time_video, y = id, fill = group)) +
+  geom_col(width = 0.7) +
+  geom_vline(xintercept = q[1], colour = "blue",  linetype = "dashed") +  # Q1
+  geom_vline(xintercept = q[2], colour = "black", linewidth = 0.8) +      # median
+  geom_vline(xintercept = q[3], colour = "red",   linetype = "dashed") +  # Q3
+  geom_text(aes(label = sprintf("%.2f s", time_video)), hjust = -0.1, size = 3) +
+  scale_fill_manual(values = c(Fastest = "forestgreen",
+                               Slowest = "tomato",
+                               Other   = "grey70")) +
+  coord_cartesian(xlim = c(0, max(data_rank$time_video) * 1.12)) +
+  labs(x = "Time (s)", y = "Child", fill = NULL) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+# Values of the quartiles
+cat("Q1:", round(q[1], 2), "s | Median:", round(q[2], 2), "s | Q3:", round(q[3], 2), "s\n")
+```
+
+# Time and age
+
+## Description of the sample
+
+```{r}
+#| label: sample-description
+
+cat("Age: from", min(data$age_years), "to", max(data$age_years), "years",
+    "| median:", median(data$age_years), "years\n")
+table(data$sex)
+```
+
+## Graph
+
+```{r}
+#| label: fig-age
+#| fig-cap: "Illinois test time according to age. Line: linear regression with its 95% confidence interval."
+
+ggplot(data, aes(x = age_years, y = time_video)) +
+  geom_smooth(method = "lm", formula = y ~ x, colour = "black", fill = "grey80") +
+  geom_point(aes(colour = sex), size = 3) +
+  geom_text(aes(label = id), vjust = -0.9, size = 2.8) +
+  scale_colour_manual(values = c(F = "tomato", M = "steelblue")) +
+  labs(x = "Age (years)", y = "Illinois time (s)", colour = "Sex") +
+  theme_minimal()
+```
+
+## Correlation
+
+```{r}
+#| label: correlation
+
+# Pearson correlation between age and time
+cor.test(data$age_years, data$time_video, method = "pearson")
+```
+
+## Linear regression
+
+```{r}
+#| label: regression
+
+# Model: time = intercept + slope * age
+model <- lm(time_video ~ age_years, data = data)
+summary(model)
+
+cat("Each extra year of age changes the time by",
+    round(coef(model)["age_years"], 3), "s\n")
+```
+
+## Checking the model (residuals)
+
+A linear regression assumes that the residuals are normally distributed
+and that their spread does not depend on the fitted values.
+
+```{r}
+#| label: fig-residuals
+#| fig-cap: "Left: QQ plot of the residuals. Right: residuals against fitted values."
+#| fig-width: 9
+#| fig-height: 4
+
+par(mfrow = c(1, 2))   # two graphs side by side
+qqnorm(residuals(model)); qqline(residuals(model), col = "red")
+plot(fitted(model), residuals(model),
+     xlab = "Fitted time (s)", ylab = "Residuals (s)")
+abline(h = 0, col = "red")
+par(mfrow = c(1, 1))
+```
+
+```{r}
+#| label: shapiro-residuals
+shapiro.test(residuals(model))
+```
