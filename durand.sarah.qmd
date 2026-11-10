@@ -1,0 +1,146 @@
+---
+title: "Video timing of the Illinois agility test"
+subtitle: "<EXACT COURSE NAME> – Project report"
+author: "Sarah Durand"
+date: today
+format:
+  html:
+    number-sections: true
+    toc: true
+    embed-resources: true
+    code-fold: true
+editor: source
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+#| label: setup
+library(ggplot2)
+data <- read.csv(file.path("results", "measures_anonymous.csv"))
+```
+
+# Identification
+
+- **University:** Université de Montpellier, UFR STAPS
+- **Programme:** Master 1 Ingénierie et Ergonomie de l'Activité Physique (IEAP), SHAI track (Sport, Health and Artificial Intelligence)
+- **Academic year:** 2026-2027
+- **Course:** Python, R and Git for data analysis (SA1M118)
+- **Teacher:** Denis Mottet
+- **Student:** Sarah Durand
+- **Project title:** Timing a speed test with a smartphone: a video tool to replace timing gates
+- **Date:** December 2026
+- **Data origin:** videos of the Illinois agility test (performed off-ice), recorded during the 2026 autumn holiday camp organised by Hock'Bean Training, a structure that supports and monitors young ice hockey players. I took part as a volunteer to set up and test the tool.
+- **GitHub repository:** [https://github.com/sdurand875-spec/projet-final-soutenance](https://github.com/sdurand875-spec/projet-final-soutenance)
+
+**GitHub repository:** [<link>](<link>)
+
+# Introduction
+
+<!-- Context: speed/agility tests usually need timing gates, which are
+     hard to set up on ice. Idea: a smartphone in slow motion (240 fps)
+     + a program where the user picks the START and END frames (like My Jump).
+     Research-engineering question (2 questions):
+     1) Can we build a simple video tool to time any test starting and
+        finishing on the same line?
+     2) Is the Illinois time related to age in young ice hockey players? -->
+
+# Data
+
+<!-- Participants: 20 young ice hockey players (17 boys, 3 girls),
+     8.8 to 17.7 years old, autumn 2026 camp. One Illinois trial each.
+     Acquisition: smartphone, slow motion 240 fps, camera fixed on the
+     start/finish line.
+     Privacy: minors -> videos and names not shared; anonymous ids P01-P20;
+     birth dates kept private, only age is published. -->
+
+# Methods: Python (video timing tool)
+
+<!-- Explain the main technical choices (this is the core of the report):
+     - fps trap: file says 30 fps, real = 240 fps -> fps asked to the user
+       (5522 frames / 30 = 184 s, impossible; / 240 = 23 s, correct)
+     - measurement window: arrows, progress bar, START/END with Enter,
+       time = (END - START) / fps, precision = 1 frame = 4.2 ms
+     - results saved in a CSV after each video, already measured videos skipped
+     - anonymisation (ids, age computed from dates)
+     - structure: main.ipynb (entry point, MEASURE switch) + sources/video_timing.py
+     Add a table with the main functions (name / input / output / role). -->
+
+# Methods: R (statistical analysis)
+
+<!-- Description (ranking, median and quartiles),
+     Pearson correlation, linear regression time ~ age,
+     checking residuals (QQ plot, Shapiro-Wilk). -->
+
+# Results
+
+## Ranking of the players
+
+```{r}
+#| label: fig-ranking
+#| fig-cap: "Illinois time of each player, from the fastest (top) to the slowest (bottom). Black line: median; blue dashed: Q1; red dashed: Q3."
+
+data_rank <- data[order(data$time_video), ]
+data_rank$group <- "Other"
+data_rank$group[1] <- "Fastest"
+data_rank$group[nrow(data_rank)] <- "Slowest"
+data_rank$id <- factor(data_rank$id, levels = rev(data_rank$id))
+q <- quantile(data_rank$time_video, probs = c(0.25, 0.50, 0.75))
+
+ggplot(data_rank, aes(x = time_video, y = id, fill = group)) +
+  geom_col(width = 0.7) +
+  geom_vline(xintercept = q[1], colour = "blue",  linetype = "dashed") +
+  geom_vline(xintercept = q[2], colour = "black", linewidth = 0.8) +
+  geom_vline(xintercept = q[3], colour = "red",   linetype = "dashed") +
+  geom_text(aes(label = sprintf("%.2f s", time_video)), hjust = -0.1, size = 3) +
+  scale_fill_manual(values = c(Fastest = "forestgreen", Slowest = "orange", Other = "grey70")) +
+  coord_cartesian(xlim = c(0, max(data_rank$time_video) * 1.12)) +
+  labs(x = "Time (s)", y = "Player", fill = NULL) +
+  theme_minimal() + theme(legend.position = "top")
+```
+
+<!-- 2-3 sentences: median, Q1, Q3, fastest and slowest times. -->
+
+## Time and age
+
+```{r}
+#| label: fig-age
+#| fig-cap: "Illinois time according to age. Line: linear regression and its 95% confidence interval."
+
+ggplot(data, aes(x = age_years, y = time_video)) +
+  geom_smooth(method = "lm", formula = y ~ x, colour = "black", fill = "grey80") +
+  geom_point(aes(colour = sex), size = 3) +
+  scale_colour_manual(values = c(F = "tomato", M = "steelblue")) +
+  labs(x = "Age (years)", y = "Illinois time (s)", colour = "Sex") +
+  theme_minimal()
+```
+
+```{r}
+#| label: tbl-regression
+#| tbl-cap: "Linear regression of the Illinois time on age."
+
+model <- lm(time_video ~ age_years, data = data)
+knitr::kable(summary(model)$coefficients, digits = 4,
+             col.names = c("Estimate", "Std. error", "t", "p"))
+```
+
+<!-- Report: r = -0.73 (95% CI -0.89 to -0.43, p < 0.001),
+     slope = -0.42 s per year, R² = 0.54, residuals normal (Shapiro p = 0.44). -->
+
+# Discussion
+
+<!-- Interpretation: older players are faster (-0.42 s/year), age explains
+     about half of the variability.
+     Limitations: n = 20, only 3 girls, one trial, cross-sectional,
+     manual frame selection (subjective but 1 frame = 4.2 ms),
+     tool not compared with timing gates.
+     Improvements: test-retest reliability, comparison with timing gates,
+     more players, automatic line-crossing detection. -->
+
+# Use of AI and references
+
+<!-- Which parts were written with Claude (Anthropic), how you checked them.
+     References: OpenCV, pandas, ggplot2, R, Quarto, Koo & Li (2016) if needed,
+     Balsalobre-Fernández et al. (My Jump app) if you cite it. -->
