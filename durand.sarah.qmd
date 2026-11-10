@@ -272,12 +272,14 @@ ggplot(data_rank, aes(x = time_video, y = id, fill = group)) +
   theme_minimal() + theme(legend.position = "top")
 ```
 
-<!-- 2-3 sentences: median, Q1, Q3, fastest and slowest times. -->
+Illinois times range from 16.55 s for the fastest player (P04) to 22.00 s for
+the slowest (P15), a difference of 5.4 s (@fig-ranking). The median is
+18.50 s. Half of the players are between 17.53 s (Q1) and 19.14 s (Q3), an
+interquartile range of 1.6 s.
 
 ## Time and age
 
 ```{r}
-#| echo: false
 #| label: fig-age
 #| fig-cap: "Illinois time according to age. Line: linear regression and its 95% confidence interval."
 
@@ -290,7 +292,6 @@ ggplot(data, aes(x = age_years, y = time_video)) +
 ```
 
 ```{r}
-#| echo: false
 #| label: tbl-regression
 #| tbl-cap: "Linear regression of the Illinois time on age."
 
@@ -299,8 +300,23 @@ knitr::kable(summary(model)$coefficients, digits = 4,
              col.names = c("Estimate", "Std. error", "t", "p"))
 ```
 
+The Illinois time decreases with age (@fig-age). The correlation is strong
+and negative: r = −0.73 (95% CI: −0.89 to −0.43), p < 0.001. The linear
+regression (@tbl-regression) estimates a slope of −0.42 s per year of age
+(95% CI: −0.62 to −0.23): over the age range of the sample (8.8 to 17.7 years),
+this represents a difference of about 3.8 s. Age explains 54% of the
+differences in time between players (R² = 0.54). The intercept is not
+interpreted, as it corresponds to an age of 0 years.
+
+Two of the three girls (15.5 and 16.0 years old) are slower than the boys of
+their age, by about 1.5 s relative to the regression line; they are the two
+largest residuals of the model. The third girl (13.2 years old) is close to
+the line. These differences cannot be attributed to sex: with only three
+girls, and without measurement of the players' physical characteristics
+(height, body mass, body composition), maturation status or training level,
+no comparison between girls and boys is possible.
+
 ```{r}
-#| echo: false
 #| label: fig-residuals
 #| fig-cap: "Left: QQ plot of the residuals. Right: residuals against fitted values."
 #| fig-width: 9
@@ -314,24 +330,67 @@ abline(h = 0, col = "red")
 par(mfrow = c(1, 1))
 ```
 
-```{r}
-#| echo: false
-#| label: shapiro-residuals
-shapiro.test(residuals(model))
-```
-
-<!-- Report: r = -0.73 (95% CI -0.89 to -0.43, p < 0.001),
-     slope = -0.42 s per year, R² = 0.54, residuals normal (Shapiro p = 0.44). -->
+The residuals follow the line of the QQ plot (@fig-residuals, left;
+Shapiro-Wilk test: W = 0.95, p = 0.44) and are randomly spread around 0
+with a roughly constant spread (@fig-residuals, right). The conditions of
+the linear regression are therefore met, with the caution required by the
+small sample size.
 
 # Discussion
 
-<!-- Interpretation: older players are faster (-0.42 s/year), age explains
-     about half of the variability.
-     Limitations: n = 20, only 3 girls, one trial, cross-sectional,
-     manual frame selection (subjective but 1 frame = 4.2 ms),
-     tool not compared with timing gates.
-     Improvements: test-retest reliability, comparison with timing gates,
-     more players, automatic line-crossing detection. -->
+**A simple, low-cost tool.** The first aim is achieved: the tool can time any
+test that starts and finishes on the same line, with a smartphone and a
+tripod, instead of a timing-gate kit costing €1,500–3,000. Filmed at
+240 frames/s, it offers a theoretical precision of 4.2 ms (one frame), which
+is largely sufficient for monitoring young players. It is quick to set up
+(a single camera), and measuring one video takes 1 to 2 minutes. The main
+technical trap, the recording frequency stated in the file (30 instead of
+240 frames/s), was identified and corrected.
+
+**Time decreases with age.** Applied to the Illinois agility test, the tool
+highlights a strong relationship between age and performance: players gain
+on average 0.42 s per year, and age explains about half of the differences
+between players. This result is in line with expectations: with growth,
+speed develops, but so do lower-limb strength and power, which are essential
+in the Illinois test to accelerate, brake and absorb changes of direction.
+In young ice hockey players, change-of-direction performance is related to
+lower-limb power and skeletal robustness, and these qualities change rapidly
+during growth and maturation (Slavicek et al., 2022). The other half of the
+variability remains unexplained: training level, maturation, morphology, etc.
+
+**Limitations.**
+
+- **The tool was not compared with timing gates**: its real accuracy (bias,
+  error) is therefore unknown.
+- **Frame selection is manual**: despite a precise criterion (hips level with
+  the cone), some subjectivity remains. Reproducibility (same observer twice,
+  or two observers) was not tested. The camera angle can also make it harder
+  to identify exactly when the hips cross the line.
+- **The sample is small** (20 players, including 3 girls), with a single
+  trial (two for some U13 players): statistical conclusions remain cautious.
+- **Conditions were not standardised**: damp and slippery ground, different
+  warm-ups depending on whether players came from an on-ice session or not.
+- **The test was performed off-ice**: the use of the tool on ice remains to be
+  checked. For ice hockey players, the off-ice Illinois test is nevertheless a
+  relevant indicator, as it is moderately related to on-ice performance
+  (Slavicek et al., 2022).
+- **Physical characteristics** (height, body mass, maturation) were not
+  measured.
+
+**Possible improvements.**
+
+- compare the tool with timing gates on the same trials, and test its
+  reproducibility;
+- automatically detect when the line is crossed, to remove the manual part
+  and save time;
+- test the tool on ice;
+- include more players, especially girls, and measure height, body mass and
+  maturation;
+- standardise the warm-up and ground conditions.
+
+**Conclusion.** This project shows that a smartphone and a simple program can
+replace timing gates for monitoring speed and agility tests, provided that
+the tool is validated against a reference measurement.
 
 # Use of AI and references
 
@@ -340,7 +399,6 @@ shapiro.test(residuals(model))
      Balsalobre-Fernández et al. (My Jump app) if you cite it. -->
      
      
-# 
 - Balsalobre-Fernández, C., Glaister, M., & Lockey, R. A. (2015). The validity
   and reliability of an iPhone app for measuring vertical jump performance.
   *Journal of Sports Sciences*, 33(15), 1574–1579.
@@ -348,3 +406,7 @@ shapiro.test(residuals(model))
   <https://mediceval.fr/home/1691-kit-panneau-witty-pro-3-cellules-microgate.html>
 - Tendo Sprint System (price consulted in November 2026):
   <https://www.cress-sport.com/technologie/chronometrage/tendo-sport-sprint-system>
+- Slavicek, T., Stastny, P., Roczniok, R., & Musalek, M. (2022). Lower limb
+  skeletal robustness determines the change of directional speed performance
+  in youth ice hockey. *Journal of Human Kinetics*, 85, 75–85.
+  <https://doi.org/10.2478/hukin-2022-0111>

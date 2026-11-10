@@ -140,6 +140,9 @@ cor.test(data$age_years, data$time_video, method = "pearson")
 model <- lm(time_video ~ age_years, data = data)
 summary(model)
 
+# 95% confidence interval of the intercept and the slope
+confint(model)
+
 cat("Each extra year of age changes the time by",
     round(coef(model)["age_years"], 3), "s\n")
 ```
