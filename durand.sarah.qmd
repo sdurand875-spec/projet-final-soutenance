@@ -212,9 +212,38 @@ Lesson learned: always check the list of uploaded files before the first commit.
 
 # Methods: R (statistical analysis)
 
-<!-- Description (ranking, median and quartiles),
-     Pearson correlation, linear regression time ~ age,
-     checking residuals (QQ plot, Shapiro-Wilk). -->
+**Link between Python and R.** The statistical analysis is done in
+`main.qmd`, a Quarto document run in RStudio. It reads the only file produced
+by Python, `results/measures_anonymous.csv`, with a path built by
+`file.path()` so that it works on Windows, Mac and Linux. R therefore never
+has access to the names or the videos. Graphics are made with the `ggplot2`
+package.
+
+**Description of performances.** Players are ranked from the fastest to the
+slowest. Times are summarised with the **median** and the **quartiles** (Q1
+and Q3) rather than the mean and standard deviation: with 20 players, the
+median is less sensitive to extreme values.
+
+**Relationship between time and age.**
+
+- A **scatter plot** (time against age) shows the relationship, with the
+  regression line and its 95% confidence interval.
+- The **Pearson correlation** (r) measures the strength and direction of the
+  relationship.
+- A **linear regression** (time = a + b × age) estimates the slope b, i.e. the
+  number of seconds gained per year of age, and the R², i.e. the proportion of
+  the differences in time explained by age.
+
+**Model checking.** Linear regression assumes that the residuals are normally
+distributed and that their spread is constant. This is checked with a **QQ
+plot** and the **Shapiro-Wilk test** for normality, and with a plot of the
+**residuals against the fitted values** for the spread. With only 20 players,
+these checks remain limited: the Shapiro-Wilk test has little power to detect
+a departure from normality, and the plots are harder to interpret with few
+points. Conclusions must therefore remain cautious.
+
+The significance level is set at **α = 0.05**. Sex is not analysed
+statistically, as the sample includes only 3 girls.
 
 # Results
 
@@ -248,6 +277,7 @@ ggplot(data_rank, aes(x = time_video, y = id, fill = group)) +
 ## Time and age
 
 ```{r}
+#| echo: false
 #| label: fig-age
 #| fig-cap: "Illinois time according to age. Line: linear regression and its 95% confidence interval."
 
@@ -260,12 +290,34 @@ ggplot(data, aes(x = age_years, y = time_video)) +
 ```
 
 ```{r}
+#| echo: false
 #| label: tbl-regression
 #| tbl-cap: "Linear regression of the Illinois time on age."
 
 model <- lm(time_video ~ age_years, data = data)
 knitr::kable(summary(model)$coefficients, digits = 4,
              col.names = c("Estimate", "Std. error", "t", "p"))
+```
+
+```{r}
+#| echo: false
+#| label: fig-residuals
+#| fig-cap: "Left: QQ plot of the residuals. Right: residuals against fitted values."
+#| fig-width: 9
+#| fig-height: 4
+
+par(mfrow = c(1, 2))   # two graphs side by side
+qqnorm(residuals(model)); qqline(residuals(model), col = "red")
+plot(fitted(model), residuals(model),
+     xlab = "Fitted time (s)", ylab = "Residuals (s)")
+abline(h = 0, col = "red")
+par(mfrow = c(1, 1))
+```
+
+```{r}
+#| echo: false
+#| label: shapiro-residuals
+shapiro.test(residuals(model))
 ```
 
 <!-- Report: r = -0.73 (95% CI -0.89 to -0.43, p < 0.001),

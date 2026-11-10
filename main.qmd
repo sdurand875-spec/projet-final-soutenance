@@ -163,6 +163,8 @@ abline(h = 0, col = "red")
 par(mfrow = c(1, 1))
 ```
 
+The residuals follow the normal line (Shapiro-Wilk p = 0.44) and are randomly spread around 0 with a constant spread: the linear model is valid.
+
 ```{r}
 #| label: shapiro-residuals
 shapiro.test(residuals(model))
